@@ -20,6 +20,8 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -33,6 +35,7 @@ public class QuestionServer
     private Calendar calendar;
     private Context context;
     private URL url;
+
 
     private QuestionServer()
     {
@@ -57,6 +60,7 @@ public class QuestionServer
         //Set context
         this.context = context;
 
+
     }
 
     public TestResult finishTest()
@@ -65,6 +69,16 @@ public class QuestionServer
         TestDatabase.getInstance().addResult(userResult);
 
         return userResult;
+    }
+
+    public int getScore()
+    {
+        return userResult.getScore();
+    }
+
+    public int getSolvingTime()
+    {
+        return currentQuestion.getTimeToSolve();
     }
 
     public void setURL(String ipAddress)
