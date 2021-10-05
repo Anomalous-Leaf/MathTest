@@ -13,10 +13,21 @@ import java.util.List;
 public class TestDatabase
 {
     private SQLiteDatabase db;
+    private static TestDatabase instance;
 
     private TestDatabase()
     {
 
+    }
+
+    public static TestDatabase getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new TestDatabase();
+        }
+
+        return instance;
     }
 
     public void load(Context context)
@@ -50,6 +61,7 @@ public class TestDatabase
         studentCv.put(StudentTable.Cols.LAST_NAME, student.getLastName());
         studentCv.put(StudentTable.Cols.PHOTO_URI, student.getPhotoUri());
 
+        //Add student to database
         db.insert(StudentTable.NAME, null, studentCv);
 
         //Loop to insert all phone numbers. Each loop is one row
