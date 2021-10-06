@@ -17,6 +17,7 @@ import curtin.edu.mathtest.R;
  */
 public class RegisterStudentFragment extends Fragment {
 
+    public static final String REGISTRATION_FRAGMENT = "registrationFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
