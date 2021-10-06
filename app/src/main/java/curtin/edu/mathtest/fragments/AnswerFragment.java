@@ -147,7 +147,7 @@ public class AnswerFragment extends Fragment {
 
     }
 
-    public void update()
+    private void update()
     {
         int jj = 0;
         List<Integer> options = server.currentOptions();
@@ -269,6 +269,12 @@ public class AnswerFragment extends Fragment {
             });
         }
 
+    }
+
+    public void newQuestionUpdate()
+    {
+        pageNumber = 1;
+        update();
     }
 
     public void setQuestionFragment(QuestionFragment questionFragment)

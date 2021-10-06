@@ -44,6 +44,7 @@ public class QuestionFragment extends Fragment {
     private ScheduledThreadPoolExecutor executor;
     private int totalTimePassed;
     private int timeLeft;
+    private AnswerFragment answerFragment;
 
 
     public QuestionFragment() {
@@ -126,12 +127,14 @@ public class QuestionFragment extends Fragment {
                 totalTime.setText(String.valueOf(totalTimePassed));
 
                 //Check if time remaining is 0 or less. If zero, move to next question
-                if (timeLeft < 1)
+                if (timeLeft <= 0)
                 {
                     server.nextQuestion();
                     currentQuestion = server.getCurrentQuestion();
 
                     //Update answer fragment to reflect new options
+                    answerFragment.newQuestionUpdate();
+
                 }
 
             }
@@ -157,5 +160,10 @@ public class QuestionFragment extends Fragment {
         //Update score and displayed question
         question.setText(server.getCurrentQuestion());
         score.setText(String.valueOf(server.getScore()));
+    }
+
+    public void setAnswerFragment(AnswerFragment answerFragment)
+    {
+        this.answerFragment = answerFragment;
     }
 }
