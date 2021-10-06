@@ -89,6 +89,7 @@ public class TestFragment extends Fragment {
             childManager.beginTransaction().add(R.id.answerFrame, answerFragment).commit();
         }
 
+        //Set fragment references for communication
         ((QuestionFragment)questionFragment).setAnswerFragment((AnswerFragment) answerFragment);
         ((AnswerFragment)answerFragment).setQuestionFragment((QuestionFragment) questionFragment);
 
