@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import curtin.edu.mathtest.R;
+import curtin.edu.mathtest.model.QuestionServer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,15 +21,14 @@ public class TestFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String STUDENT_ID = "studentId";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int studentId;
 
     private FragmentManager parentManager;
     private FragmentManager childManager;
+    private QuestionServer server;
 
     public TestFragment() {
         // Required empty public constructor
@@ -38,16 +38,14 @@ public class TestFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param inId Parameter 1.
      * @return A new instance of fragment TestFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TestFragment newInstance(String param1, String param2) {
+    public static TestFragment newInstance(int inId) {
         TestFragment fragment = new TestFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(STUDENT_ID, inId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +54,7 @@ public class TestFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            studentId = getArguments().getInt(STUDENT_ID);
         }
     }
 
@@ -73,6 +70,10 @@ public class TestFragment extends Fragment {
 
         parentManager = getParentFragmentManager();
         childManager = getChildFragmentManager();
+
+        //Create new test
+        server.setURL(null);
+        server.newTest(1, getActivity());
 
         questionFragment = childManager.findFragmentById(R.id.questionFrame);
         answerFragment =  childManager.findFragmentById(R.id.answerFrame);

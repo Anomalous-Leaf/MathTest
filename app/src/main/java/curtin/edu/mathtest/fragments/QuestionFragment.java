@@ -91,8 +91,6 @@ public class QuestionFragment extends Fragment {
         totalTime = view.findViewById(R.id.timerView);
 
         server = QuestionServer.getInstance();
-        server.setURL(null);
-        server.newTest(1, getActivity());
 
         //Restore time if needed
         if (savedInstanceState != null)
