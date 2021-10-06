@@ -67,10 +67,30 @@ public class TestFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_test, container, false);
 
+        Fragment answerFragment;
+        Fragment questionFragment;
+
+
         parentManager = getParentFragmentManager();
         childManager = getChildFragmentManager();
 
+        questionFragment = childManager.findFragmentById(R.id.questionFrame);
+        answerFragment =  childManager.findFragmentById(R.id.answerFrame);
 
+        if (questionFragment == null)
+        {
+            questionFragment = new QuestionFragment();
+            childManager.beginTransaction().add(R.id.questionFrame, questionFragment).commit();
+        }
+
+        if (answerFragment == null)
+        {
+            answerFragment =  new AnswerFragment();
+            childManager.beginTransaction().add(R.id.answerFrame, answerFragment).commit();
+        }
+
+        ((QuestionFragment)questionFragment).setAnswerFragment((AnswerFragment) answerFragment);
+        ((AnswerFragment)answerFragment).setQuestionFragment((QuestionFragment) questionFragment);
 
         return view;
     }
