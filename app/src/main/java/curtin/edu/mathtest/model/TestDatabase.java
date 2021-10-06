@@ -113,6 +113,33 @@ public class TestDatabase
         return results;
     }
 
+    public Student getStudent(int id)
+    {
+        Student student;
+        String where = StudentTable.Cols.ID + " = ?";
+        String[] args = {String.valueOf(id)};
+
+        //Get student that matches id
+        TestCursor cursor = new TestCursor(db.query(StudentTable.NAME,
+                null,
+                where,
+                args,
+                null,
+                null,
+                null));
+
+        try
+        {
+            cursor.moveToFirst();
+            student = cursor.getStudent();
+        }
+        finally {
+            cursor.close();
+        }
+
+        return student;
+    }
+
     public List<Student> getStudents()
     {
         List<Student> students = new ArrayList<>();
@@ -139,6 +166,51 @@ public class TestDatabase
             cursor.close();
         }
         return students;
+    }
+
+    public void updateStudent(Student student)
+    {
+        String where = StudentTable.Cols.ID + " = ?";
+        String[] args = {String.valueOf(student.getId())};
+        ContentValues emailCv = new ContentValues();
+        ContentValues phoneCv = new ContentValues();
+        ContentValues studentCv = new ContentValues();
+
+        //Put student data into cv
+        studentCv.put(StudentTable.Cols.ID, student.getId());
+        studentCv.put(StudentTable.Cols.FIRST_NAME, student.getFirstName());
+        studentCv.put(StudentTable.Cols.LAST_NAME, student.getLastName());
+        studentCv.put(StudentTable.Cols.PHOTO_URI, student.getPhotoUri());
+
+        //Update student
+        db.update(StudentTable.NAME, studentCv, where, args);
+
+        //Remove previous emails of student first
+        db.delete(EmailTable.NAME, where, args);
+
+        //Loop to insert all emails. Each loop is a row
+        for (String email : student.getEmailList())
+        {
+            emailCv = new ContentValues();
+            emailCv.put(EmailTable.Cols.EMAIL, email);
+            emailCv.put(EmailTable.Cols.ID, student.getId());
+            db.insert(EmailTable.NAME, null, emailCv);
+        }
+
+        //Remove previous phone number of student first
+        db.delete(PhoneTable.NAME, where, args);
+
+        //Loop to insert all phone numbers. Each loop is one row
+        for (String number : student.getPhoneList())
+        {
+            phoneCv = new ContentValues();
+            phoneCv.put(PhoneTable.Cols.PHONE, number);
+            phoneCv.put(PhoneTable.Cols.ID, student.getId());
+            db.insert(PhoneTable.NAME, null, phoneCv);
+        }
+
+
+
     }
 
     private class TestCursor extends CursorWrapper
