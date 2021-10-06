@@ -87,13 +87,58 @@ public class TestDatabase
     {
         List<TestResult> results = new ArrayList<>();
 
-        return results;
+        TestCursor cursor = new TestCursor(db.query(TestResults.NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null));
 
+        try
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast())
+            {
+                results.add(cursor.getTestResult());
+                cursor.moveToNext();
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+
+        return results;
     }
 
     public List<Student> getStudents()
     {
-        return null;
+        List<Student> students = new ArrayList<>();
+
+        TestCursor cursor = new TestCursor(db.query(StudentTable.NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null));
+
+        try
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast())
+            {
+                students.add(cursor.getStudent());
+                cursor.moveToNext();
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+        return students;
     }
 
     private class TestCursor extends CursorWrapper
@@ -105,7 +150,20 @@ public class TestDatabase
 
         public Student getStudent()
         {
-            return null;
+            Student student;
+
+            int id = getInt(getColumnIndex(StudentTable.Cols.ID));
+            String firstName = getString(getColumnIndex(StudentTable.Cols.FIRST_NAME));
+            String lastName = getString(getColumnIndex(StudentTable.Cols.LAST_NAME));
+            String photoUri = getString(getColumnIndex(StudentTable.Cols.PHOTO_URI));
+            List<String> phones = getPhoneList(id);
+            List<String> emails = getEmailList(id);
+
+            student = new Student(id, firstName, lastName, photoUri);
+            student.setPhoneList(phones);
+            student.setEmailList(emails);
+
+            return student;
         }
 
         public TestResult getTestResult()
@@ -113,14 +171,77 @@ public class TestDatabase
             return null;
         }
 
-        public List<String> getPhoneList()
+        public List<String> getPhoneList(int id)
         {
-            return null;
+            List<String> phoneList = new ArrayList<>();
+            String[] args = {String.valueOf(id)};
+            String where = PhoneTable.Cols.ID + " = ?";
+
+            TestCursor cursor = new TestCursor(db.query(PhoneTable.NAME,
+                    null,
+                    where,
+                    args,
+                    null,
+                    null,
+                    null));
+
+            try
+            {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast())
+                {
+                    phoneList.add(cursor.getPhone());
+                    cursor.moveToNext();
+                }
+            }
+            finally
+            {
+                cursor.close();
+            }
+
+            return phoneList;
         }
 
-        public List<String> getEmailList()
+        private String getPhone()
         {
-            return null;
+            return getString(getColumnIndex(PhoneTable.Cols.PHONE));
+        }
+
+        public List<String> getEmailList(int id)
+        {
+            List<String> emailList = new ArrayList<>();
+
+            String[] args = {String.valueOf(id)};
+            String where = EmailTable.Cols.ID + " = ?";
+
+            TestCursor cursor = new TestCursor(db.query(EmailTable.NAME,
+                    null,
+                    where,
+                    args,
+                    null,
+                    null,
+                    null));
+
+            try
+            {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast())
+                {
+                    emailList.add(cursor.getEmail());
+                    cursor.moveToNext();
+                }
+            }
+            finally
+            {
+                cursor.close();
+            }
+
+            return emailList;
+        }
+
+        private String getEmail()
+        {
+            return getString(getColumnIndex(EmailTable.Cols.EMAIL));
         }
     }
 
