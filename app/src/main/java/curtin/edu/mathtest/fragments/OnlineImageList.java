@@ -7,24 +7,37 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import curtin.edu.mathtest.R;
 
@@ -37,11 +50,14 @@ public class OnlineImageList extends Fragment {
 
     private static final String SEARCH_TERM = "searchTerm";
     private static final String STUDENT_ID = "studentId";
+    private static final String JSON_STRING = "jsonString";
 
     private String searchTerm;
     private int studentId;
     private RecyclerView rv;
     private RecyclerView.Adapter adapter;
+    private String jsonString;
+    private List<URL> imageUrls;
 
     public OnlineImageList() {
         // Required empty public constructor
@@ -81,9 +97,154 @@ public class OnlineImageList extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_online_image_list, container, false);
 
+        //Download list of image urls from pixabay server
+        String urlString;
+        String key = "";
+        URL url;
+
+        urlString = Uri.parse("https://pixabay.com/api/").buildUpon().
+                appendQueryParameter("key", key).
+                appendQueryParameter("lang", "en").
+                appendQueryParameter("q", searchTerm).build().toString();
+
+        if (savedInstanceState == null)
+        {
+            //First time creating fragment. Download URLs
+            try {
+                url = new URL(urlString);
+
+                //Download using AsyncTask
+                //Will also parse json to urls
+                new UrlListDownloader().execute(url);
+
+            }
+            catch (MalformedURLException e)
+            {
+
+                Toast.makeText(getActivity(), "Error connecting to URL", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            //Restore json string
+            jsonString = savedInstanceState.getString(JSON_STRING);
+            parseJsonString(jsonString);
+        }
+
 
 
         return view;
+    }
+
+    //AsyncTask for downloading image url list
+    private class UrlListDownloader extends AsyncTask<URL, Void, String>
+    {
+        @Override
+        protected String doInBackground(URL... urls)
+        {
+            //Code modified from practical 6
+            HttpURLConnection conn = null;
+            InputStream input;
+            ByteArrayOutputStream baos;
+            byte[] buffer;
+            int bytesRead;
+            String result = "";
+            int nBytes = 0;
+
+
+            try
+            {
+                conn = (HttpsURLConnection) urls[0].openConnection();
+
+                Log.d("Download", "Code: " + conn.getResponseCode());
+                //Check status
+                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+                {
+                    //Throw exception
+                    Log.d("Download", "Failed to open connection");
+                }
+                else
+                {
+                    input = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    buffer = new byte[1024];
+                    bytesRead = input.read(buffer);
+                    while(bytesRead > 0)
+                    {
+                        nBytes = nBytes + bytesRead;
+                        baos.write(buffer, 0, bytesRead);
+                        bytesRead = input.read(buffer);
+                    }
+                    baos.close();
+                    result = new String(baos.toByteArray());
+                }
+            }
+            catch (IOException ioEx)
+            {
+                Log.e("Download", "IOException: " + ioEx.getMessage());
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.disconnect();
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String json)
+        {
+            super.onPostExecute(json);
+
+            parseJsonString(json);
+        }
+    }
+
+    public void parseJsonString(String json)
+    {
+        jsonString = json;
+        //Parse json
+        JSONObject baseObject;
+        JSONObject currObject;
+        JSONArray jsonArray;
+        List<String> urlStrings = new ArrayList<>();
+        List<URL> urls = new ArrayList<>();
+
+        try {
+            baseObject = new JSONObject(json);
+
+            jsonArray = baseObject.getJSONArray("hits");
+
+            //Loop up to 50 times to get maximum of 50 images
+            for (int ii = 0; ii < 50 && ii < jsonArray.length(); ii++)
+            {
+                currObject = jsonArray.getJSONObject(ii);
+                urlStrings.add(currObject.getString("largeImageUrl"));
+
+            }
+        }
+        catch (JSONException e)
+        {
+            Toast.makeText(getActivity(), "Error parsing JSON", Toast.LENGTH_SHORT).show();
+        }
+
+        //Convert list of string to list of URLs
+        for (int ii = 0; ii < urlStrings.size(); ii++)
+        {
+            try {
+                urls.add(new URL(urlStrings.get(ii)));
+            }
+            catch (MalformedURLException e)
+            {
+                //Just skip to next URL
+            }
+        }
+
+        //Set url list in fragment
+        imageUrls = urls;
     }
 
     private class ImageViewHolder extends RecyclerView.ViewHolder
@@ -223,5 +384,9 @@ public class OnlineImageList extends Fragment {
         }
     }
 
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(JSON_STRING, jsonString);
+    }
 }

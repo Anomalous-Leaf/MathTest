@@ -3,12 +3,16 @@ package curtin.edu.mathtest.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import curtin.edu.mathtest.R;
+import curtin.edu.mathtest.model.TestDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +30,17 @@ public class RegisterStudentFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Button fromContacts;
+    private EditText firstNameField;
+    private EditText lastNameField;
+    private EditText phoneField;
+    private EditText emailField;
+    private Button addStudentButton;
+    private Button addEmailButton;
+    private Button addPhoneButton;
+    private TestDatabase db;
+    private FragmentManager parentManager;
 
     public RegisterStudentFragment() {
         // Required empty public constructor
@@ -62,6 +77,11 @@ public class RegisterStudentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_student, container, false);
+        View view = inflater.inflate(R.layout.fragment_register_student, container, false);
+
+        db = TestDatabase.getInstance();
+        parentManager = getParentFragmentManager();
+
+        return view;
     }
 }
