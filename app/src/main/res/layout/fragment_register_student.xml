@@ -67,7 +67,7 @@
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            app:layout_constraintBottom_toTopOf="@+id/button5"
+            app:layout_constraintBottom_toTopOf="@+id/addEmailButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button5" />
+            app:layout_constraintTop_toBottomOf="@+id/studentImage" />
 
         <Button
             android:id="@+id/addNumberButton"
@@ -96,15 +96,38 @@
             app:layout_constraintTop_toBottomOf="@+id/phoneNumField" />
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/addEmailButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Email"
-            app:layout_constraintBottom_toTopOf="@+id/addStudentButton"
+            app:layout_constraintBottom_toTopOf="@+id/selectPhotoButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/emailField" />
+
+        <ImageView
+            android:id="@+id/studentImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/addStudentButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
+            tools:src="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/selectPhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Photo"
+            app:layout_constraintBottom_toTopOf="@+id/studentImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEmailButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

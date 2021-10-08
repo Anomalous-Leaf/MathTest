@@ -23,6 +23,16 @@ public class Student
         emailList = new ArrayList<>();
     }
 
+    public Student(String firstName, String lastName, String photoUri)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.photoUri = photoUri;
+
+        phoneList = new ArrayList<>();
+        emailList = new ArrayList<>();
+    }
+
     public int getId() {
         return id;
     }
