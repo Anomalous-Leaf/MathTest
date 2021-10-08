@@ -1,5 +1,7 @@
 package curtin.edu.mathtest.fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -41,6 +44,7 @@ public class RegisterStudentFragment extends Fragment {
     private static final String LAST_NAME = "lastName";
     private static final String EMAILS = "email";
     private static final String PHONES = "phone";
+    private static final String PHOTO_URI = "photoUri";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -54,9 +58,11 @@ public class RegisterStudentFragment extends Fragment {
     private Button addStudentButton;
     private Button addEmailButton;
     private Button addPhoneButton;
+    private Button getFromContactsButton;
     private TestDatabase db;
     private FragmentManager parentManager;
     private ActivityResultLauncher<Void> contactLauncher;
+    private ActivityResultLauncher<String> permissionRequestLauncher;
 
     private String firstName;
     private String lastName;
@@ -190,6 +196,42 @@ public class RegisterStudentFragment extends Fragment {
             }
         });
 
+        //Modified from practical 5
+        getFromContactsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
+                {
+                    contactLauncher.launch(null);
+                }
+                else
+                {
+                    //Get permission if not obtained
+                    permissionRequestLauncher.launch(Manifest.permission.READ_CONTACTS);
+                }
+
+
+            }
+        });
+
+        //Reused from practical 5
+        permissionRequestLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+            @Override
+            public void onActivityResult(Boolean result) {
+                if (result)
+                {
+                    //Granted permission
+                    Toast.makeText(getActivity(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         //Set up add phone button
         addPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,6 +270,7 @@ public class RegisterStudentFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putString(FIRST_NAME, firstName);
         outState.putString(LAST_NAME, lastName);
+        outState.putString(PHOTO_URI, photoUri);
         outState.putStringArrayList(EMAILS, emails);
         outState.putStringArrayList(PHONES, phones);
     }
