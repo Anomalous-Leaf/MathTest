@@ -29,10 +29,12 @@ import curtin.edu.mathtest.model.TestDatabase;
 public class ImageOptions extends Fragment {
 
     public static final String IMAGE_KEY = "imageKey";
+    public static final String IMAGE_SELECTOR_FRAGMENT = "imageFrag";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String STUDENT_ID = "studentId";
+
 
     // TODO: Rename and change types of parameters
     private int studentId;

@@ -12,6 +12,9 @@ public class Student
     private List<String> phoneList;
     private List<String> emailList;
 
+    //Used as a generator of student ids
+    private static int nextId = 1;
+
     public Student(int id, String firstName, String lastName, String photoUri)
     {
         this.id = id;
@@ -21,16 +24,28 @@ public class Student
 
         phoneList = new ArrayList<>();
         emailList = new ArrayList<>();
+
+        if (id > nextId)
+        {
+            //In case of recreating students from database
+            nextId = id + 1;
+        }
     }
 
     public Student(String firstName, String lastName, String photoUri)
     {
+        this.id = nextId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.photoUri = photoUri;
 
         phoneList = new ArrayList<>();
         emailList = new ArrayList<>();
+    }
+
+    public static int getNextId()
+    {
+        return nextId;
     }
 
     public int getId() {

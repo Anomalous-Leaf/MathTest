@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ public class RegisterStudentFragment extends Fragment {
     private Button addEmailButton;
     private Button addPhoneButton;
     private Button getFromContactsButton;
+    private Button selectPhotoButton;
     private TestDatabase db;
     private FragmentManager parentManager;
     private ActivityResultLauncher<Void> contactLauncher;
@@ -120,6 +122,8 @@ public class RegisterStudentFragment extends Fragment {
         addStudentButton = view.findViewById(R.id.addStudentButton);
         addPhoneButton = view.findViewById(R.id.addNumberButton);
         addEmailButton = view.findViewById(R.id.addEmailButton);
+        getFromContactsButton = view.findViewById(R.id.fromContactsButton);
+        selectPhotoButton = view.findViewById(R.id.selectPhotoButton);
 
         //Set up pick contact button
         //Modified from practical 5
@@ -232,6 +236,26 @@ public class RegisterStudentFragment extends Fragment {
             }
         });
 
+        selectPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Start fragment for getting a photo
+                ImageOptions optionFragment = ImageOptions.newInstance(Student.getNextId());
+
+                parentManager.beginTransaction().replace(R.id.mainFrame, optionFragment).addToBackStack(REGISTRATION_FRAGMENT).commit();
+
+            }
+        });
+
+        //Set up listener for  image selector fragment result Uri string
+        parentManager.setFragmentResultListener(ImageOptions.IMAGE_SELECTOR_FRAGMENT, getActivity(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                //Get the Uri of the student photo file
+                photoUri = result.getString(ImageOptions.IMAGE_KEY);
+            }
+        });
+
         //Set up add phone button
         addPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,11 +278,14 @@ public class RegisterStudentFragment extends Fragment {
             public void onClick(View view) {
                 //Create student and add to database
                 Student newStudent;
+
+                //May need to add checks to ensure valid values
                 newStudent = new Student(firstName, lastName, photoUri);
                 db.addStudent(newStudent);
                 Toast.makeText(getActivity(), "Added successfully", Toast.LENGTH_SHORT);
 
                 //Pop back stack to return to main menu
+                parentManager.popBackStack();
             }
         });
 
