@@ -3,10 +3,12 @@ package curtin.edu.mathtest.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import curtin.edu.mathtest.R;
 
@@ -25,6 +27,12 @@ public class TeacherFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Button sendResultsButton;
+    private Button registerStudentButton;
+    private Button viewStudentsButton;
+    private Button viewTestResultsButton;
+    private FragmentManager parentManager;
 
     public TeacherFragment() {
         // Required empty public constructor
@@ -61,6 +69,60 @@ public class TeacherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_teacher, container, false);
+        View view = inflater.inflate(R.layout.fragment_teacher, container, false);
+
+        sendResultsButton = view.findViewById(R.id.sendResultsButton);
+        registerStudentButton = view.findViewById(R.id.registerButton);
+        viewStudentsButton = view.findViewById(R.id.viewStudentListButton);
+        viewTestResultsButton = view.findViewById(R.id.viewTestResultsButton);
+
+        parentManager = getParentFragmentManager();
+
+        sendResultsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectTestResultToSendFragment sendResFrag = new SelectTestResultToSendFragment();
+
+                parentManager.beginTransaction().replace(R.id.mainFrame, sendResFrag).commit();
+
+
+            }
+        });
+
+        registerStudentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RegisterStudentFragment regFrag = new RegisterStudentFragment();
+
+                parentManager.beginTransaction().replace(R.id.mainFrame, regFrag).commit();
+
+
+            }
+        });
+
+        viewStudentsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StudentListFragment studentListFrag = new StudentListFragment();
+
+                parentManager.beginTransaction().replace(R.id.mainFrame, studentListFrag).commit();
+
+
+            }
+        });
+
+        viewTestResultsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TestResultsListFragment testListFrag = new TestResultsListFragment();
+
+                parentManager.beginTransaction().replace(R.id.mainFrame, testListFrag).commit();
+
+
+            }
+        });
+
+
+        return view;
     }
 }
