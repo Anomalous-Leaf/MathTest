@@ -131,6 +131,11 @@ public class OnlineImageList extends Fragment {
             parseJsonString(jsonString);
         }
 
+        //create list of images from list of image urls
+        rv = view.findViewById(R.id.imageList);
+        adapter = new ImageListAdapter(imageUrls);
+        rv.setAdapter(adapter);
+
 
 
         return view;

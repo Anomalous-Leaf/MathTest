@@ -20,6 +20,7 @@ import java.util.List;
 
 import curtin.edu.mathtest.R;
 import curtin.edu.mathtest.model.Student;
+import curtin.edu.mathtest.model.TestDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +39,9 @@ public class SelectStudentFragment extends Fragment {
     private String mParam2;
 
     private FragmentManager parentFragmentManager;
+    private RecyclerView rv;
+    private StudentListAdapter adapter;
+    private TestDatabase db;
 
     public SelectStudentFragment() {
         // Required empty public constructor
@@ -77,6 +81,13 @@ public class SelectStudentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_student, container, false);
 
         parentFragmentManager = getParentFragmentManager();
+        db = TestDatabase.getInstance();
+
+        //Set up the list of students who can start the test
+        adapter = new StudentListAdapter(db.getStudents());
+        rv = view.findViewById(R.id.testStudentList);
+        rv.setAdapter(adapter);
+
 
         return view;
     }
