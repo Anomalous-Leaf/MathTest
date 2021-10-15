@@ -3,10 +3,12 @@ package curtin.edu.mathtest.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import curtin.edu.mathtest.R;
 
@@ -22,9 +24,15 @@ public class LoginFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final String INITIAL_SCREEN = "initialScreen";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Button teacherButton;
+    private Button studentButton;
+    private FragmentManager parentManager;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -61,6 +69,36 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        studentButton = view.findViewById(R.id.studentButton);
+        teacherButton = view.findViewById(R.id.teacherButton);
+        parentManager = getParentFragmentManager();
+
+        //Set listeners for buttons
+        studentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Open student selector fragment
+                SelectStudentFragment selectorFragment = new SelectStudentFragment();
+
+                parentManager.beginTransaction().addToBackStack(INITIAL_SCREEN) .replace(R.id.mainFrame, selectorFragment).commit();
+
+            }
+        });
+
+        teacherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Open teacher options fragment
+                TeacherFragment teacherFragment = new TeacherFragment();
+
+                parentManager.beginTransaction().addToBackStack(INITIAL_SCREEN).replace(R.id.mainFrame, teacherFragment).commit();
+
+            }
+        });
+
+
+        return view;
     }
 }
