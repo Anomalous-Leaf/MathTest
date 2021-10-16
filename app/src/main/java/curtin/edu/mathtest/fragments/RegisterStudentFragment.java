@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class RegisterStudentFragment extends Fragment {
     private ArrayList<String> emails;
     private ArrayList<String> phones;
     private String photoUri;
+    private ImageView studentImage;
 
     public RegisterStudentFragment() {
         // Required empty public constructor
@@ -124,6 +126,7 @@ public class RegisterStudentFragment extends Fragment {
         addEmailButton = view.findViewById(R.id.addEmailButton);
         getFromContactsButton = view.findViewById(R.id.fromContactsButton);
         selectPhotoButton = view.findViewById(R.id.selectPhotoButton);
+        studentImage = view.findViewById(R.id.studentImage);
 
         //Set up pick contact button
         //Modified from practical 5
@@ -242,7 +245,7 @@ public class RegisterStudentFragment extends Fragment {
                 //Start fragment for getting a photo
                 ImageOptions optionFragment = ImageOptions.newInstance(Student.getNextId());
 
-                parentManager.beginTransaction().replace(R.id.mainFrame, optionFragment).addToBackStack(REGISTRATION_FRAGMENT).commit();
+                parentManager.beginTransaction().addToBackStack(REGISTRATION_FRAGMENT).replace(R.id.mainFrame, optionFragment).addToBackStack(REGISTRATION_FRAGMENT).commit();
 
             }
         });
@@ -252,7 +255,8 @@ public class RegisterStudentFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 //Get the Uri of the student photo file
-                photoUri = result.getString(ImageOptions.IMAGE_KEY);
+                photoUri = result.getParcelable(ImageOptions.IMAGE_KEY).toString();
+                System.out.println(photoUri);
             }
         });
 
@@ -289,6 +293,17 @@ public class RegisterStudentFragment extends Fragment {
             }
         });
 
+        //Restore state if needed
+        if (savedInstanceState != null)
+        {
+            firstName = savedInstanceState.getString(FIRST_NAME);
+            lastName = savedInstanceState.getString(LAST_NAME);
+            photoUri = savedInstanceState.getString(PHOTO_URI);
+            emails = savedInstanceState.getStringArrayList(EMAILS);
+            phones = savedInstanceState.getStringArrayList(PHONES);
+
+        }
+
         return view;
     }
 
@@ -300,5 +315,18 @@ public class RegisterStudentFragment extends Fragment {
         outState.putString(PHOTO_URI, photoUri);
         outState.putStringArrayList(EMAILS, emails);
         outState.putStringArrayList(PHONES, phones);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (photoUri != null)
+        {
+            //Set the imageview source to the uri
+            studentImage.setImageURI(Uri.parse(photoUri));
+            studentImage.invalidate();
+            studentImage.setVisibility(View.VISIBLE);
+        }
+
     }
 }

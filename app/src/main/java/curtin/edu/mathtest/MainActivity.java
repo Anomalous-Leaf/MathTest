@@ -28,10 +28,9 @@ public class MainActivity extends AppCompatActivity {
         if (loginFrag == null)
         {
             loginFrag = new LoginFragment();
+            //Assign mainframe the fragment
+            manager.beginTransaction().add(R.id.mainFrame, loginFrag).commit();
         }
-
-        //Assign mainframe the fragment
-        manager.beginTransaction().add(R.id.mainFrame, loginFrag).commit();
 
     }
 }

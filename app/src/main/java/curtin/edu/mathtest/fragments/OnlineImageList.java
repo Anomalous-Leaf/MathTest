@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -36,6 +37,7 @@ import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.AbstractOwnableSynchronizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -47,7 +49,7 @@ import curtin.edu.mathtest.R;
  * create an instance of this fragment.
  */
 public class OnlineImageList extends Fragment {
-
+    public static final String ONLINE_LIST_FRAGMENT = "onlineListFragment";
     private static final String SEARCH_TERM = "searchTerm";
     private static final String STUDENT_ID = "studentId";
     private static final String JSON_STRING = "jsonString";
@@ -99,13 +101,15 @@ public class OnlineImageList extends Fragment {
 
         //Download list of image urls from pixabay server
         String urlString;
-        String key = "";
+        String key = "23319229-94b52a4727158e1dc3fd5f2db";
         URL url;
+        imageUrls = new ArrayList<>();
 
         urlString = Uri.parse("https://pixabay.com/api/").buildUpon().
                 appendQueryParameter("key", key).
                 appendQueryParameter("lang", "en").
-                appendQueryParameter("q", searchTerm).build().toString();
+                appendQueryParameter("q", searchTerm).
+                appendQueryParameter("per_page", "50").build().toString();
 
         if (savedInstanceState == null)
         {
@@ -134,6 +138,7 @@ public class OnlineImageList extends Fragment {
         //create list of images from list of image urls
         rv = view.findViewById(R.id.imageList);
         adapter = new ImageListAdapter(imageUrls);
+        rv.setLayoutManager(new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false));
         rv.setAdapter(adapter);
 
 
@@ -216,7 +221,6 @@ public class OnlineImageList extends Fragment {
         JSONObject currObject;
         JSONArray jsonArray;
         List<String> urlStrings = new ArrayList<>();
-        List<URL> urls = new ArrayList<>();
 
         try {
             baseObject = new JSONObject(json);
@@ -227,29 +231,27 @@ public class OnlineImageList extends Fragment {
             for (int ii = 0; ii < 50 && ii < jsonArray.length(); ii++)
             {
                 currObject = jsonArray.getJSONObject(ii);
-                urlStrings.add(currObject.getString("largeImageUrl"));
+                urlStrings.add(currObject.getString("largeImageURL"));
 
             }
         }
         catch (JSONException e)
         {
-            Toast.makeText(getActivity(), "Error parsing JSON", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Error parsing JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         //Convert list of string to list of URLs
         for (int ii = 0; ii < urlStrings.size(); ii++)
         {
             try {
-                urls.add(new URL(urlStrings.get(ii)));
+                imageUrls.add(new URL(urlStrings.get(ii)));
+                adapter.notifyDataSetChanged();
             }
             catch (MalformedURLException e)
             {
                 //Just skip to next URL
             }
         }
-
-        //Set url list in fragment
-        imageUrls = urls;
     }
 
     private class ImageViewHolder extends RecyclerView.ViewHolder
@@ -258,6 +260,7 @@ public class OnlineImageList extends Fragment {
         private ImageView image;
         private View view;
         private Bitmap imageBitmap;
+        private AsyncTask loadingTask;
 
         public ImageViewHolder(View view, ViewGroup parent)
         {
@@ -272,7 +275,7 @@ public class OnlineImageList extends Fragment {
             image = view.findViewById(R.id.rowImage);
 
             //Set size for 3 images in a row
-            size = ImageViewHolder.this.parent.getMeasuredWidth() / 3;
+            size = parent.getMeasuredWidth() / 3;
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
 
             //Set square size
@@ -307,8 +310,9 @@ public class OnlineImageList extends Fragment {
 
                     //Return Uri to parent fragment and pop backstack
                     bundle.putParcelable(ImageOptions.IMAGE_KEY, imageUri);
-                    manager.setFragmentResult(ImageOptions.IMAGE_KEY, bundle);
+                    manager.setFragmentResult(ONLINE_LIST_FRAGMENT, bundle);
 
+                    manager.beginTransaction().remove(OnlineImageList.this).commit();
                     manager.popBackStack();
                 }
             });
@@ -316,8 +320,14 @@ public class OnlineImageList extends Fragment {
 
         public void bind(URL newUrl)
         {
+            //Check if previous task is running. If running, cancel before starting new
+            if (loadingTask != null && loadingTask.getStatus().equals(AsyncTask.Status.RUNNING))
+            {
+                loadingTask.cancel(true);
+            }
+
             //Load new image into ImageView using AsyncTask
-            new ImageLoadingTask().execute(newUrl);
+            loadingTask = new ImageLoadingTask().execute(newUrl);
         }
 
         private class ImageLoadingTask extends AsyncTask<URL, Void, Bitmap>

@@ -6,10 +6,13 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +123,7 @@ public class ImageOptions extends Fragment {
                     bundle.putParcelable(IMAGE_KEY, imageUri);
 
                     //Return Uri to the parent fragment and pop backstack
-                    parentManager.setFragmentResult(IMAGE_KEY, bundle);
+                    parentManager.setFragmentResult(IMAGE_SELECTOR_FRAGMENT, bundle);
                     parentManager.popBackStack();
 
                 }
@@ -144,7 +147,7 @@ public class ImageOptions extends Fragment {
                 bundle.putParcelable(IMAGE_KEY, imageUri);
 
                 //Return Uri to the parent fragment and pop backstack
-                parentManager.setFragmentResult(IMAGE_KEY, bundle);
+                parentManager.setFragmentResult(IMAGE_SELECTOR_FRAGMENT, bundle);
                 parentManager.popBackStack();
             }
         });
@@ -153,7 +156,35 @@ public class ImageOptions extends Fragment {
             @Override
             public void onClick(View view) {
                 //Start new fragment to search online
+                OnlineImageList listFrag;
+                String searchTerm;
+                Editable text = searchTermBox.getText();
 
+                //Check if search term is not null
+
+                if (text != null)
+                {
+                    searchTerm = text.toString();
+                    if (searchTerm != null)
+                    {
+                        listFrag = OnlineImageList.newInstance(studentId, searchTerm);
+                        parentManager.beginTransaction().replace(R.id.mainFrame, listFrag).commit();
+                    }
+                }
+            }
+        });
+
+        parentManager.setFragmentResultListener(OnlineImageList.ONLINE_LIST_FRAGMENT, getActivity(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result)
+            {
+                Bundle bundle = new Bundle();
+
+                bundle.putParcelable(IMAGE_KEY, result.getParcelable(IMAGE_KEY));
+
+                //Return Uri to the parent fragment and pop backstack
+                parentManager.setFragmentResult(IMAGE_SELECTOR_FRAGMENT, bundle);
+                parentManager.popBackStack(RegisterStudentFragment.REGISTRATION_FRAGMENT, 0);
             }
         });
 

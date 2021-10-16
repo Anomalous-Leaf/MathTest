@@ -82,8 +82,7 @@ public class LoginFragment extends Fragment {
                 //Open student selector fragment
                 SelectStudentFragment selectorFragment = new SelectStudentFragment();
 
-                parentManager.beginTransaction().addToBackStack(INITIAL_SCREEN)
-                        .replace(R.id.mainFrame, selectorFragment).commit();
+                parentManager.beginTransaction().addToBackStack(INITIAL_SCREEN).replace(R.id.mainFrame, selectorFragment).commit();
 
             }
         });
