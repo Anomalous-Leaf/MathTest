@@ -20,6 +20,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -59,8 +60,6 @@ public class QuestionServer
 
         //Set context
         this.context = context;
-
-
     }
 
     public TestResult finishTest()
@@ -105,8 +104,22 @@ public class QuestionServer
 
     public void nextQuestion()
     {
+        String text;
+
         //Start AsyncTask to download next JSON from server
-        new DownloadQuestionTask().execute();
+        try
+        {
+            text = new DownloadQuestionTask().execute(url).get();
+            new DownloadQuestionTask().onPostExecute(text);
+        }
+        catch (ExecutionException executionException)
+        {
+            Log.e("Download", "Execution Exception: " + executionException.getMessage());
+        }
+        catch (InterruptedException interruptedException)
+        {
+            Log.e("Download", "Execution Exception: " + interruptedException.getMessage());
+        }
     }
 
     public String getCurrentQuestion()

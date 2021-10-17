@@ -48,6 +48,20 @@ public class Student
         return nextId;
     }
 
+    public static void updateNextId(TestDatabase db)
+    {
+        List<Student> students = db.getStudents();
+
+        //Loop to find the highest id in database
+        for (Student curr : students)
+        {
+            if (curr.getId() > nextId)
+            {
+                nextId = curr.getId() + 1;
+            }
+        }
+    }
+
     public int getId() {
         return id;
     }

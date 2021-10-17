@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import curtin.edu.mathtest.R;
@@ -85,6 +86,8 @@ public class AnswerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_answer, container, false);
+
+        buttonList = new ArrayList<>();
 
         //Get references to views
         answerButton1 = view.findViewById(R.id.answerButton1);

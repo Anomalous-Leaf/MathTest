@@ -109,6 +109,8 @@ public class QuestionFragment extends Fragment {
             totalTimePassed = 0;
         }
 
+        //TODO: Update TextViews with the data obtained
+
         //Start the timer for the test
         executor = new ScheduledThreadPoolExecutor(1);
         executor.schedule(new Runnable() {

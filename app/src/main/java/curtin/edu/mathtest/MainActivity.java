@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import curtin.edu.mathtest.fragments.LoginFragment;
+import curtin.edu.mathtest.model.Student;
 import curtin.edu.mathtest.model.TestDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentManager manager;
     private Fragment loginFrag;
+    private TestDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
         manager = getSupportFragmentManager();
 
         //Load database
-        TestDatabase.getInstance().load(this);
+        db = TestDatabase.getInstance();
+        db.load(this);
+        Student.updateNextId(db);
 
         //Create login fragment
         loginFrag = manager.findFragmentById(R.id.mainFrame);

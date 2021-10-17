@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
 import android.provider.ContactsContract;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,13 +156,16 @@ public class RegisterStudentFragment extends Fragment {
 
                             //Get cursor to get first and last name
                             cursor = getActivity().getContentResolver().query(ContactsContract.Data.CONTENT_URI, new String[]{
-                                    ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME}, ContactsContract.CommonDataKinds.StructuredName._ID + "= ?", new String[]{String.valueOf(contactId)}, null, null);
+                                    ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME}, ContactsContract.Data.MIMETYPE + " = '" +
+                                    ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE + "' AND " + ContactsContract.Data.CONTACT_ID + "= ?", new String[]{String.valueOf(contactId)}, null, null);
 
                             if (cursor != null && cursor.moveToFirst())
                             {
                                 //Has data. Get first and last name
                                 firstName = cursor.getString(0);
                                 lastName = cursor.getString(1);
+                                firstNameField.setText(firstName);
+                                lastNameField.setText(lastName);
                             }
 
                             //Get another cursor to get email of the user id
@@ -172,6 +176,7 @@ public class RegisterStudentFragment extends Fragment {
                             {
                                 //Get the email
                                 contactEmail = cursor.getString(0);
+                                emailField.setText(contactEmail);
                             }
                             else
                             {
@@ -186,6 +191,7 @@ public class RegisterStudentFragment extends Fragment {
                             if (cursor.moveToFirst())
                             {
                                 contactPhone = cursor.getString(0);
+                                phoneField.setText(contactPhone);
                             }
                             else
                             {
@@ -282,14 +288,70 @@ public class RegisterStudentFragment extends Fragment {
             public void onClick(View view) {
                 //Create student and add to database
                 Student newStudent;
+                Editable firstField = firstNameField.getText();
+                Editable lastField = lastNameField.getText();
+                String firstNameString;
+                String lastNameString;
 
                 //May need to add checks to ensure valid values
-                newStudent = new Student(firstName, lastName, photoUri);
-                db.addStudent(newStudent);
-                Toast.makeText(getActivity(), "Added successfully", Toast.LENGTH_SHORT);
+                if (firstField != null)
+                {
+                    firstNameString = firstField.toString();
+                    if (lastField != null)
+                    {
+                        lastNameString = lastField.toString();
 
-                //Pop back stack to return to main menu
-                parentManager.popBackStack();
+                        //Check for non-empty string
+                        if (!firstNameString.equals("") && !lastNameString.equals(""))
+                        {
+                            //Non-empty string. Valid
+                            //Check for non-null photo Uri
+                            if (photoUri != null)
+                            {
+                                if (emails.size() > 0)
+                                {
+                                    if (phones.size() > 0)
+                                    {
+                                        //All fields valid
+                                        //Create student object
+                                        newStudent = new Student(firstName, lastName, photoUri);
+
+                                        //add emails and phone numbers to student
+                                        newStudent.setEmailList(emails);
+                                        newStudent.setPhoneList(phones);
+
+                                        db.addStudent(newStudent);
+                                        Toast.makeText(getActivity(), "Added successfully", Toast.LENGTH_SHORT).show();
+
+                                        //Pop back stack to return to main menu
+                                        parentManager.beginTransaction().remove(RegisterStudentFragment.this).commit();
+                                        parentManager.popBackStack();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getActivity(), "Error. Please add a phone number", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else
+                                {
+                                    Toast.makeText(getActivity(), "Error. Please add an email", Toast.LENGTH_SHORT).show();
+                                }
+
+
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(), "Error. Please select an image", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity(), "Error. First and Last names cannot be blank", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
             }
         });
 
@@ -301,7 +363,11 @@ public class RegisterStudentFragment extends Fragment {
             photoUri = savedInstanceState.getString(PHOTO_URI);
             emails = savedInstanceState.getStringArrayList(EMAILS);
             phones = savedInstanceState.getStringArrayList(PHONES);
-
+        }
+        else
+        {
+            emails = new ArrayList<>();
+            phones = new ArrayList<>();
         }
 
         return view;

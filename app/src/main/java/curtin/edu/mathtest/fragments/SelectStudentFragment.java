@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -86,6 +88,7 @@ public class SelectStudentFragment extends Fragment {
         //Set up the list of students who can start the test
         adapter = new StudentListAdapter(db.getStudents());
         rv = view.findViewById(R.id.testStudentList);
+        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setAdapter(adapter);
 
 
