@@ -47,6 +47,10 @@ public class AnswerFragment extends Fragment {
     private QuestionFragment questionFragment;
     private int pageNumber;
 
+
+    private Button currentButton;
+    private Integer currentOption;
+
     private QuestionServer server;
 
 
@@ -139,6 +143,36 @@ public class AnswerFragment extends Fragment {
             nextButton.setVisibility(View.VISIBLE);
         }
 
+        //Hide all buttons
+        for (Button button : buttonList)
+        {
+            button.setVisibility(View.INVISIBLE);
+        }
+
+        //Set up listeners for next button
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Increase page number
+                pageNumber++;
+
+                //Update options
+                sameQuestionUpdate();
+            }
+        });
+
+        //Set up listeners for back button
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Increase page number
+                pageNumber--;
+
+                //Update options
+                sameQuestionUpdate();
+            }
+        });
+
 
         return view;
     }
@@ -154,78 +188,83 @@ public class AnswerFragment extends Fragment {
     {
         int jj = 0;
         List<Integer> options = server.currentOptions();
-        Button currentButton;
-        Integer currentOption;
+
+        //0 indexed
         int fromOptionNumber = (pageNumber * buttonList.size()) - buttonList.size();
 
         //Update answer options
         //Get options and check whether manual input is needed
         if (options.size()> 0)
         {
+
             //Loops as many times as there are buttons, or until the end of option list, whichever is less
-            for (int ii = fromOptionNumber - 1; ii < buttonList.size() && ii < options.size() - 1; ii++)
+            for (int ii = fromOptionNumber; ii < fromOptionNumber + buttonList.size() && ii < options.size(); ii++)
             {
                 //Set the text for the button
                 currentButton = buttonList.get(jj);
                 currentOption = options.get(ii);
-                currentButton.setText(currentOption.toString());
 
-                //Set onclick listeners based on whether option is right answer
-                if (currentButton.equals(server.currentAnswer()))
-                {
-                    //This option is the correct answer
-                    currentButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            server.correctAnswer(true);
+                AnswerFragment.this.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentButton.setVisibility(View.VISIBLE);
+                        currentButton.setText(currentOption.toString());
+                        //Set onclick listeners based on whether option is right answer
+                        if (currentOption.intValue() ==  server.currentAnswer())
+                        {
+                            //This option is the correct answer
+                            currentButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    server.correctAnswer(true);
 
-                            //Get next question
-                            server.nextQuestion();
+                                    //Get next question
+                                    server.nextQuestion();
 
-                            //Update question fragment
-                            questionFragment.update();
+                                    //Update question fragment
+                                    questionFragment.update();
 
-                            //Reset page number
-                            pageNumber = 1;
+                                    //Reset page number
+                                    pageNumber = 1;
 
-                            backButton.setVisibility(View.INVISIBLE);
+                                    backButton.setVisibility(View.INVISIBLE);
 
-                            update();
+                                    newQuestionUpdate();
+                                }
+                            });
                         }
-                    });
-                }
-                else
-                {
-                    currentButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            //Not correct answer
-                            server.correctAnswer(false);
+                        else
+                        {
+                            currentButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //Not correct answer
+                                    server.correctAnswer(false);
 
-                            //Get next question
-                            server.nextQuestion();
+                                    //Get next question
+                                    server.nextQuestion();
 
-                            //Update question fragment
-                            questionFragment.update();
+                                    //Update question fragment
+                                    questionFragment.update();
 
-                            //Reset page number
-                            pageNumber = 1;
+                                    //Reset page number
+                                    pageNumber = 1;
 
-                            backButton.setVisibility(View.INVISIBLE);
+                                    backButton.setVisibility(View.INVISIBLE);
 
-                            update();
+                                    newQuestionUpdate();
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                });
+
+                jj++;
+
             }
         }
         else
         {
-            //Hide all buttons
-            for (Button button : buttonList)
-            {
-                button.setVisibility(View.INVISIBLE);
-            }
 
             //Show manual input box
             manualAnswerBox.setVisibility(View.VISIBLE);
@@ -260,7 +299,7 @@ public class AnswerFragment extends Fragment {
                         //Reset page number
                         pageNumber = 1;
 
-                        update();
+                        newQuestionUpdate();
 
                     }
                     catch (NumberFormatException e)
@@ -276,7 +315,53 @@ public class AnswerFragment extends Fragment {
 
     public void newQuestionUpdate()
     {
+        //Hide manual input box
+        manualAnswerBox.setVisibility(View.INVISIBLE);
+        submitButton.setVisibility(View.INVISIBLE);
+
+        //Hide all buttons
+        for (Button button : buttonList)
+        {
+            button.setVisibility(View.INVISIBLE);
+        }
+
+
         pageNumber = 1;
+        update();
+    }
+
+    private void sameQuestionUpdate()
+    {
+        //Hide manual input box
+        manualAnswerBox.setVisibility(View.INVISIBLE);
+        submitButton.setVisibility(View.INVISIBLE);
+
+        //Hide all buttons
+        for (Button button : buttonList)
+        {
+            button.setVisibility(View.INVISIBLE);
+        }
+
+        //Check if there are any more pages after this page
+        if (pageNumber * buttonList.size() >= server.currentOptions().size())
+        {
+            nextButton.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            nextButton.setVisibility(View.VISIBLE);
+        }
+
+        //Check if the are any pages before this page
+        if ((pageNumber * buttonList.size()) - buttonList.size() <= 0)
+        {
+            backButton.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            backButton.setVisibility(View.VISIBLE);
+        }
+
         update();
     }
 

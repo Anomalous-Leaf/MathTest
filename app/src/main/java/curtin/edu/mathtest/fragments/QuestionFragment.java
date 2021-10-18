@@ -1,15 +1,19 @@
 package curtin.edu.mathtest.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +49,7 @@ public class QuestionFragment extends Fragment {
     private int totalTimePassed;
     private int timeLeft;
     private AnswerFragment answerFragment;
+    private FutureTask timerTask;
 
 
     public QuestionFragment() {
@@ -103,42 +108,23 @@ public class QuestionFragment extends Fragment {
         else
         {
             //First time created. Do initial setup
-            server.nextQuestion();
             currentQuestion = server.getCurrentQuestion();
             timeLeft = server.getSolvingTime();
             totalTimePassed = 0;
         }
 
-        //TODO: Update TextViews with the data obtained
+        //Update TextViews with the data obtained
+        timeRemaining.setText(String.valueOf(timeLeft));
+        totalTime.setText(String.valueOf(totalTimePassed));
+        score.setText(String.valueOf(server.getScore()));
+        question.setText(currentQuestion);
+
 
         //Start the timer for the test
-        executor = new ScheduledThreadPoolExecutor(1);
-        executor.schedule(new Runnable() {
-            @Override
-            public void run() {
-                //Decrement every second
-                timeLeft--;
+        executor = new ScheduledThreadPoolExecutor(2);
+        startTimer();
 
-                //Increment every second
-                totalTimePassed++;
-
-                //Update views
-                timeRemaining.setText(String.valueOf(timeLeft));
-                totalTime.setText(String.valueOf(totalTimePassed));
-
-                //Check if time remaining is 0 or less. If zero, move to next question
-                if (timeLeft <= 0)
-                {
-                    server.nextQuestion();
-                    currentQuestion = server.getCurrentQuestion();
-
-                    //Update answer fragment to reflect new options
-                    answerFragment.newQuestionUpdate();
-
-                }
-
-            }
-        }, 1, TimeUnit.SECONDS);
+        answerFragment.newQuestionUpdate();
 
 
         return view;
@@ -160,10 +146,61 @@ public class QuestionFragment extends Fragment {
         //Update score and displayed question
         question.setText(server.getCurrentQuestion());
         score.setText(String.valueOf(server.getScore()));
+
+        //Update new time to solve
+        timeLeft = server.getSolvingTime();
+        timeRemaining.setText(String.valueOf(server.getSolvingTime()));
     }
 
     public void setAnswerFragment(AnswerFragment answerFragment)
     {
         this.answerFragment = answerFragment;
+    }
+
+    public void startTimer()
+    {
+        executor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //Decrement every second
+                    timeLeft--;
+
+                    //Increment every second
+                    totalTimePassed++;
+
+                    //Update views
+                    QuestionFragment.this.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            timeRemaining.setText(String.valueOf(timeLeft));
+                            totalTime.setText(String.valueOf(totalTimePassed));
+
+                            //Check if time remaining is 0 or less. If zero, move to next question
+                            if (timeLeft <= 0)
+                            {
+                                server.nextQuestion();
+                                currentQuestion = server.getCurrentQuestion();
+
+                                //Update time remaining TextView
+                                timeRemaining.setText(String.valueOf(server.getSolvingTime()));
+
+                                //Update answer fragment to reflect new options
+                                answerFragment.newQuestionUpdate();
+
+                            }
+                        }
+                    });
+
+
+
+                }
+                catch (Exception e)
+                {
+                    Log.e("Exception", e.getMessage());
+                }
+
+            }
+        }, 0, 1, TimeUnit.SECONDS);
     }
 }

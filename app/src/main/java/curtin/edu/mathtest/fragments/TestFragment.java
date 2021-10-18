@@ -76,15 +76,10 @@ public class TestFragment extends Fragment {
         server.setURL("192.168.0.58");
 
         server.newTest(studentId, getActivity());
+        server.nextQuestion();
 
         questionFragment = childManager.findFragmentById(R.id.questionFrame);
         answerFragment =  childManager.findFragmentById(R.id.answerFrame);
-
-        if (questionFragment == null)
-        {
-            questionFragment = new QuestionFragment();
-            childManager.beginTransaction().add(R.id.questionFrame, questionFragment).commit();
-        }
 
         if (answerFragment == null)
         {
@@ -92,10 +87,15 @@ public class TestFragment extends Fragment {
             childManager.beginTransaction().add(R.id.answerFrame, answerFragment).commit();
         }
 
+        if (questionFragment == null)
+        {
+            questionFragment = new QuestionFragment();
+            childManager.beginTransaction().add(R.id.questionFrame, questionFragment).commit();
+        }
+
         //Set fragment references for communication
         ((QuestionFragment)questionFragment).setAnswerFragment((AnswerFragment) answerFragment);
         ((AnswerFragment)answerFragment).setQuestionFragment((QuestionFragment) questionFragment);
-
         return view;
     }
 }
