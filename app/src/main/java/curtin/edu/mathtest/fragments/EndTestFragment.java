@@ -2,13 +2,20 @@ package curtin.edu.mathtest.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import curtin.edu.mathtest.R;
+import curtin.edu.mathtest.model.QuestionServer;
+import curtin.edu.mathtest.model.Student;
+import curtin.edu.mathtest.model.TestDatabase;
+import curtin.edu.mathtest.model.TestResult;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,10 +28,24 @@ public class EndTestFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String STUDENT_ID = "studentId";
+    private static final String START_TIME = "startTime";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private TextView studentName;
+    private TextView numQuestions;
+    private TextView startTime;
+    private TextView endTime;
+    private TextView score;
+    private Button mainMenuButton;
+    private TestResult result;
+    private TestDatabase db;
+
+    private String startTimeString;
+    private int studentId;
 
     public EndTestFragment() {
         // Required empty public constructor
@@ -61,6 +82,68 @@ public class EndTestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_end_test, container, false);
+        View view = inflater.inflate(R.layout.fragment_end_test, container, false);
+        String fullName;
+        Student student;
+
+        studentName = view.findViewById(R.id.studentName);
+        numQuestions = view.findViewById(R.id.questionsAnswered);
+        startTime = view.findViewById(R.id.startTime);
+        endTime = view.findViewById(R.id.endTime);
+        score = view.findViewById(R.id.score);
+        mainMenuButton = view.findViewById(R.id.toMainMenuButton);
+
+        db = TestDatabase.getInstance();
+
+
+        if (savedInstanceState != null)
+        {
+            studentId = savedInstanceState.getInt(STUDENT_ID);
+            startTimeString = savedInstanceState.getString(START_TIME);
+
+            //Retrieve result from database
+            result = db.getResult(studentId, startTimeString);
+
+        }
+        else
+        {
+            //Finish the test and get result
+            result = QuestionServer.getInstance().finishTest();
+            studentId = result.getStudentId();
+            startTimeString = result.getStartTime();
+        }
+
+        //Set up TextViews to display results
+        student = db.getStudent(studentId);
+        fullName = student.getFirstName() + " " + student.getLastName();
+
+        studentName.setText(fullName);
+        numQuestions.setText(String.valueOf(result.getQuestions()));
+        startTime.setText(startTimeString);
+        endTime.setText(result.getEndTime());
+        score.setText(String.valueOf(result.getScore()));
+
+
+        //Set up button to return to main menu
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Replace fragment with login fragment
+                getParentFragmentManager().beginTransaction().replace(R.id.mainFrame, new LoginFragment()).commit();
+            }
+        });
+
+
+
+        return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(STUDENT_ID, studentId);
+        outState.putString(START_TIME, startTimeString);
+
     }
 }

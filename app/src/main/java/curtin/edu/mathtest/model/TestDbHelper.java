@@ -35,11 +35,22 @@ public class TestDbHelper extends SQLiteOpenHelper
 
         //Create email table
         sqLiteDatabase.execSQL("CREATE TABLE " + EmailTable.NAME + "(" +
-                EmailTable.Cols.ID + ", " +
-                EmailTable.Cols.EMAIL + ", " +
+                EmailTable.Cols.ID + "INTEGER, " +
+                EmailTable.Cols.EMAIL + "TEXT, " +
                 "FOREIGN KEY(" + EmailTable.Cols.ID + ") REFERENCES " + StudentTable.NAME + "(" + StudentTable.Cols.ID + ") " +
                 "ON DELETE CASCADE ON UPDATE CASCADE, " +
                 "PRIMARY KEY(" + EmailTable.Cols.ID + ", " + EmailTable.Cols.EMAIL + "))");
+
+        //Create TestResults Table
+        sqLiteDatabase.execSQL("CREATE TABLE " + TestResults.NAME + "(" +
+                TestResults.Cols.ID + "INTEGER, " +
+                TestResults.Cols.START_TIME + "TEXT, " +
+                TestResults.Cols.END_TIME + "TEXT, " +
+                TestResults.Cols.SCORE + "INTEGER, " +
+                TestResults.Cols.NUM_QUESTIONS + "INTEGER, " +
+                "FOREIGN KEY(" + TestResults.Cols.ID + ") REFERENCES " + StudentTable.NAME + "(" + StudentTable.Cols.ID + ") " +
+                "ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "PRIMARY KEY(" + TestResults.Cols.ID + ", " + TestResults.Cols.START_TIME + "))");
 
     }
 

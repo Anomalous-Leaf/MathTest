@@ -113,6 +113,34 @@ public class TestDatabase
         return results;
     }
 
+    public TestResult getResult(int id, String startTime)
+    {
+        TestResult result;
+        String selection = "WHERE " + TestResults.Cols.ID + " = ? AND " + TestResults.Cols.START_TIME + " = ?";
+        String[] args = {String.valueOf(id), startTime};
+
+        TestCursor cursor = new TestCursor(db.query(TestResults.NAME,
+                null,
+                selection,
+                args,
+                null,
+                null,
+                null));
+
+        try
+        {
+            cursor.moveToFirst();
+            result = cursor.getTestResult();
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+
+        return result;
+    }
+
     public Student getStudent(int id)
     {
         Student student;

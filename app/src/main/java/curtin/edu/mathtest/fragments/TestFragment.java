@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import curtin.edu.mathtest.R;
 import curtin.edu.mathtest.model.QuestionServer;
@@ -29,6 +30,7 @@ public class TestFragment extends Fragment {
     private FragmentManager parentManager;
     private FragmentManager childManager;
     private QuestionServer server;
+    private Button endTestButton;
 
     public TestFragment() {
         // Required empty public constructor
@@ -70,6 +72,7 @@ public class TestFragment extends Fragment {
 
         parentManager = getParentFragmentManager();
         childManager = getChildFragmentManager();
+        endTestButton = view.findViewById(R.id.endTestButton);
 
         //Create new test
         server = QuestionServer.getInstance();
@@ -96,6 +99,16 @@ public class TestFragment extends Fragment {
         //Set fragment references for communication
         ((QuestionFragment)questionFragment).setAnswerFragment((AnswerFragment) answerFragment);
         ((AnswerFragment)answerFragment).setQuestionFragment((QuestionFragment) questionFragment);
+
+        //Set listener to end test
+        endTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EndTestFragment endFragment = new EndTestFragment();
+
+                parentManager.beginTransaction().replace(R.id.mainFrame, endFragment).commit();
+            }
+        });
         return view;
     }
 }

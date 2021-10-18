@@ -40,7 +40,7 @@ public class QuestionServer
 
     private QuestionServer()
     {
-        calendar = Calendar.getInstance();
+
     }
 
     public static QuestionServer getInstance()
@@ -56,7 +56,9 @@ public class QuestionServer
     public void newTest(int id, Context context)
     {
         //Starts a new test for the user
-        userResult = new TestResult(id, calendar.getTime().toString());
+        userResult = new TestResult(id, Calendar.getInstance().getTime().toString());
+
+
 
         //Set context
         this.context = context;
@@ -64,9 +66,15 @@ public class QuestionServer
 
     public TestResult finishTest()
     {
+        String endTime = Calendar.getInstance().getTime().toString();
+
+        //Set the ending time
+        userResult.setEndTime(endTime);
+
         //Save results to database
         TestDatabase.getInstance().addResult(userResult);
 
+        //Return the results
         return userResult;
     }
 
