@@ -82,7 +82,7 @@ public class PhoneListFragment extends Fragment {
 
         phoneFields = new ArrayList<>();
         newPhoneList = new ArrayList<>();
-        currentPhoneList = new ArrayList<>();
+
         db = TestDatabase.getInstance();
         student = db.getStudent(studentId);
 
@@ -109,7 +109,10 @@ public class PhoneListFragment extends Fragment {
         phoneFields.add(phone9);
         phoneFields.add(phone10);
 
-        for (int ii = 0; ii < phoneFields.size() - 1; ii++)
+        currentPhoneList = student.getPhoneList();
+
+        //Loop until all phonefields ierated over, or all phone numbers of student, whichever is less
+        for (int ii = 0; ii < phoneFields.size() && ii < currentPhoneList.size(); ii++)
         {
             phoneFields.get(ii).setText(currentPhoneList.get(ii));
         }
@@ -128,10 +131,12 @@ public class PhoneListFragment extends Fragment {
                     }
                 }
 
-                student.setEmailList(newPhoneList);
+                student.setPhoneList(newPhoneList);
 
                 //Update student in database
                 db.updateStudent(student);
+
+                getParentFragmentManager().popBackStack();
 
             }
         });

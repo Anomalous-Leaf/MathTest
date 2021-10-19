@@ -80,7 +80,7 @@ public class StudentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_student_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_student, container, false);
 
         db = TestDatabase.getInstance();
 

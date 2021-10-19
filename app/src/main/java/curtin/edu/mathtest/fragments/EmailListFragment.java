@@ -111,7 +111,7 @@ public class EmailListFragment extends Fragment {
         emailFields.add(email10);
 
         //Display emails in EditText objs
-        for (int ii = 0; ii < emailFields.size() - 1; ii++)
+        for (int ii = 0; ii < emailFields.size() && ii < currentEmailList.size(); ii++)
         {
             emailFields.get(ii).setText(currentEmailList.get(ii));
         }
@@ -134,6 +134,8 @@ public class EmailListFragment extends Fragment {
 
                 //Update student in database
                 db.updateStudent(student);
+
+                getParentFragmentManager().popBackStack();
 
             }
         });

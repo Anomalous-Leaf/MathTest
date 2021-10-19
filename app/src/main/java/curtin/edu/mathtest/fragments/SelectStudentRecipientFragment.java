@@ -1,5 +1,6 @@
 package curtin.edu.mathtest.fragments;
 
+import android.content.Intent;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,11 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 
 import curtin.edu.mathtest.R;
 import curtin.edu.mathtest.model.Student;
 import curtin.edu.mathtest.model.TestDatabase;
+import curtin.edu.mathtest.model.TestResult;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +42,8 @@ public class SelectStudentRecipientFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private TestResult selectedResult;
 
     private FragmentManager parentFragmentManager;
     private StudentListAdapter adapter;
@@ -79,7 +85,7 @@ public class SelectStudentRecipientFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_select_student_recipient, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_student, container, false);
 
         parentFragmentManager = getParentFragmentManager();
 
@@ -119,12 +125,25 @@ public class SelectStudentRecipientFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Create fragment for selecting test result to email to this student
-                    Fragment testResultsListFragment = TestResultsListFragment.newInstance(currStudent.getId());
+                    String fullName = currStudent.getFirstName() + " " + currStudent.getLastName();
 
-                    //Replace fragment
-                    parentFragmentManager.beginTransaction().replace(R.id.mainFrame, testResultsListFragment).commit();
 
+                    //Create email Intent
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                    String[] recipients = currStudent.getEmailList().toArray(new String[0]);
+                    String subject = "Test Results for Student: " + fullName;
+                    String content;
+                    String format = "Student Name: %s\nTest Start Time: %s\nTest End Time: %s\nNumber of questions answered: %d\nFinal Score: %d";
+
+                    content = String.format(format, fullName, selectedResult.getStartTime(), selectedResult.getEndTime(), selectedResult.getQuestions(), selectedResult.getScore());
+
+
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, content);
+
+                    //Start the activity
+                    startActivity(emailIntent);
                 }
             });
         }

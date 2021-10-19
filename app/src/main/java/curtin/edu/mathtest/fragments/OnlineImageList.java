@@ -313,7 +313,6 @@ public class OnlineImageList extends Fragment {
                     manager.setFragmentResult(ONLINE_LIST_FRAGMENT, bundle);
 
                     manager.beginTransaction().remove(OnlineImageList.this).commit();
-                    manager.popBackStack();
                 }
             });
         }

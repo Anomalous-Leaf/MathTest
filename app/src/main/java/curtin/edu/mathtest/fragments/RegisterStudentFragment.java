@@ -251,7 +251,7 @@ public class RegisterStudentFragment extends Fragment {
                 //Start fragment for getting a photo
                 ImageOptions optionFragment = ImageOptions.newInstance(Student.getNextId());
 
-                parentManager.beginTransaction().addToBackStack(REGISTRATION_FRAGMENT).replace(R.id.mainFrame, optionFragment).addToBackStack(REGISTRATION_FRAGMENT).commit();
+                parentManager.beginTransaction().addToBackStack(REGISTRATION_FRAGMENT).replace(R.id.mainFrame, optionFragment).commit();
 
             }
         });

@@ -115,11 +115,11 @@ public class SelectStudentFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Create test fragment for student
-                    Fragment testFragment = TestFragment.newInstance(currStudent.getId());
+                    //Create fragment for selecting test result to email to this student
+                    Fragment testResultsListFragment = TestResultsListFragment.newInstance(currStudent.getId());
 
                     //Replace fragment
-                    parentFragmentManager.beginTransaction().replace(R.id.mainFrame, testFragment).commit();
+                    parentFragmentManager.beginTransaction().replace(R.id.mainFrame, testResultsListFragment).commit();
 
                 }
             });

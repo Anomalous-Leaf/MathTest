@@ -1,5 +1,7 @@
 package curtin.edu.mathtest.fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -7,6 +9,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -50,6 +54,7 @@ public class ImageOptions extends Fragment {
     private Uri imageUri;
     private ActivityResultLauncher<Uri> photoLauncher;
     private ActivityResultLauncher<String> pickPhotoLauncher;
+    private ActivityResultLauncher<String> permissionRequestLauncher;
     private TestDatabase db;
 
     public ImageOptions() {
@@ -120,6 +125,7 @@ public class ImageOptions extends Fragment {
 
                 if (result == true)
                 {
+                    //imageUri is the Uri passed to the photo app
                     bundle.putParcelable(IMAGE_KEY, imageUri);
 
                     //Return Uri to the parent fragment and pop backstack
@@ -130,12 +136,35 @@ public class ImageOptions extends Fragment {
             }
         });
 
+        //Reused from practical 5
+        permissionRequestLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+            @Override
+            public void onActivityResult(Boolean result) {
+                if (result)
+                {
+                    //Granted permission
+                    Toast.makeText(getActivity(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         pickPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                //Launch activity
-                pickPhotoLauncher.launch("image/*");
+            public void onClick(View view) {
+
+                //Check for permission to read from storage
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    //Launch activity
+                    pickPhotoLauncher.launch("image/*");
+                } else {
+                    //Get permission if not obtained
+                    permissionRequestLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
             }
         });
 
@@ -144,7 +173,7 @@ public class ImageOptions extends Fragment {
             public void onActivityResult(Uri result) {
 
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(IMAGE_KEY, imageUri);
+                bundle.putParcelable(IMAGE_KEY, result);
 
                 //Return Uri to the parent fragment and pop backstack
                 parentManager.setFragmentResult(IMAGE_SELECTOR_FRAGMENT, bundle);
@@ -184,7 +213,7 @@ public class ImageOptions extends Fragment {
 
                 //Return Uri to the parent fragment and pop backstack
                 parentManager.setFragmentResult(IMAGE_SELECTOR_FRAGMENT, bundle);
-                parentManager.popBackStack(RegisterStudentFragment.REGISTRATION_FRAGMENT, 0);
+                parentManager.popBackStack();
             }
         });
 
