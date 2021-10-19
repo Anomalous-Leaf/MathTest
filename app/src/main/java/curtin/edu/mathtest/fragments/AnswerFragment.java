@@ -319,6 +319,26 @@ public class AnswerFragment extends Fragment {
         manualAnswerBox.setVisibility(View.INVISIBLE);
         submitButton.setVisibility(View.INVISIBLE);
 
+        //Check if there are any more pages after this page
+        if (pageNumber * buttonList.size() >= server.currentOptions().size())
+        {
+            nextButton.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            nextButton.setVisibility(View.VISIBLE);
+        }
+
+        //Check if the are any pages before this page
+        if ((pageNumber * buttonList.size()) - buttonList.size() <= 0)
+        {
+            backButton.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            backButton.setVisibility(View.VISIBLE);
+        }
+
         //Hide all buttons
         for (Button button : buttonList)
         {

@@ -183,8 +183,7 @@ public class QuestionFragment extends Fragment {
                                 server.nextQuestion();
                                 currentQuestion = server.getCurrentQuestion();
 
-                                //Update time remaining TextView
-                                timeRemaining.setText(String.valueOf(server.getSolvingTime()));
+                                update();
 
                                 //Update answer fragment to reflect new options
                                 answerFragment.newQuestionUpdate();
