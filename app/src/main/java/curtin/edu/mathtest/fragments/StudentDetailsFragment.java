@@ -38,6 +38,7 @@ public class StudentDetailsFragment extends Fragment {
     private Button viewEmailsButton;
     private Button saveButton;
     private ImageView profileImage;
+    private Button deleteButton;
     private TestDatabase db;
     private String uriString;
 
@@ -85,6 +86,7 @@ public class StudentDetailsFragment extends Fragment {
         viewEmailsButton = view.findViewById(R.id.viewEmailsButton);
         saveButton = view.findViewById(R.id.saveUpdatesButton);
         profileImage = view.findViewById(R.id.studentProfilePicture);
+        deleteButton = view.findViewById(R.id.deleteButton);
 
         db = TestDatabase.getInstance();
 
@@ -180,9 +182,14 @@ public class StudentDetailsFragment extends Fragment {
                 {
                     Toast.makeText(getActivity(), "First name cannot be blank", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
 
-
-
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Delete the student from database
+                db.deleteStudent(student);
             }
         });
 
