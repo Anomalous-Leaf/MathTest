@@ -266,9 +266,14 @@ public class TestDatabase
             phoneCv.put(PhoneTable.Cols.ID, student.getId());
             db.insert(PhoneTable.NAME, null, phoneCv);
         }
+    }
 
+    public void deleteStudent(Student student)
+    {
+        String where = StudentTable.Cols.ID + " = ?";
+        String[] args = {String.valueOf(student.getId())};
 
-
+        db.delete(StudentTable.NAME, where, args);
     }
 
     private class TestCursor extends CursorWrapper
