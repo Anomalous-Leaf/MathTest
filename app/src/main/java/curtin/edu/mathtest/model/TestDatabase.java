@@ -113,6 +113,36 @@ public class TestDatabase
         return results;
     }
 
+    public List<TestResult> getAllResults()
+    {
+        List<TestResult> results = new ArrayList<>();
+
+        TestCursor cursor = new TestCursor(db.query(TestResults.NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null));
+
+        try
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast())
+            {
+                results.add(cursor.getTestResult());
+                cursor.moveToNext();
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+
+        return results;
+    }
+
     public TestResult getResult(int id, String startTime)
     {
         TestResult result;
@@ -268,7 +298,17 @@ public class TestDatabase
 
         public TestResult getTestResult()
         {
-            return null;
+            TestResult result;
+            int id = getInt(getColumnIndex(TestResults.Cols.ID));
+            String startTime = getString(getColumnIndex(TestResults.Cols.START_TIME));
+            String endTime = getString(getColumnIndex(TestResults.Cols.END_TIME));
+            int questions = getInt(getColumnIndex(TestResults.Cols.NUM_QUESTIONS));
+            int score = getInt(getColumnIndex(TestResults.Cols.SCORE));
+
+            result = new TestResult(id, startTime, endTime, questions, score);
+
+
+            return result;
         }
 
         public List<String> getPhoneList(int id)

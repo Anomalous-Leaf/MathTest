@@ -20,8 +20,10 @@
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_teacher.xml" value="0.264" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_test.xml" value="0.264" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_test_results_details.xml" value="0.11639492753623189" />
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_test_results_list.xml" value="0.1265625" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/image_row.xml" value="0.1265625" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/student_row_list.xml" value="0.264" />
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/test_result_row.xml" value="0.264" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/xml/files.xml" value="0.1265625" />
       </map>
     </option>

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +50,7 @@ public class QuestionFragment extends Fragment {
     private int totalTimePassed;
     private int timeLeft;
     private AnswerFragment answerFragment;
-    private FutureTask timerTask;
+    private ScheduledFuture timerTask;
 
 
     public QuestionFragment() {
@@ -159,7 +160,7 @@ public class QuestionFragment extends Fragment {
 
     public void startTimer()
     {
-        executor.scheduleAtFixedRate(new Runnable() {
+        timerTask = executor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -202,5 +203,10 @@ public class QuestionFragment extends Fragment {
 
             }
         }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    public void stopTimerTask()
+    {
+        timerTask.cancel(true);
     }
 }

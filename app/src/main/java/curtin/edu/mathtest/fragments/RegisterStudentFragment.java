@@ -261,8 +261,11 @@ public class RegisterStudentFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 //Get the Uri of the student photo file
-                photoUri = result.getParcelable(ImageOptions.IMAGE_KEY).toString();
-                System.out.println(photoUri);
+                if (result.getParcelable(ImageOptions.IMAGE_KEY) != null)
+                {
+                    photoUri = result.getParcelable(ImageOptions.IMAGE_KEY).toString();
+                    System.out.println(photoUri);
+                }
             }
         });
 
@@ -314,7 +317,7 @@ public class RegisterStudentFragment extends Fragment {
                                     {
                                         //All fields valid
                                         //Create student object
-                                        newStudent = new Student(firstName, lastName, photoUri);
+                                        newStudent = new Student(firstNameString, lastNameString, photoUri);
 
                                         //add emails and phone numbers to student
                                         newStudent.setEmailList(emails);

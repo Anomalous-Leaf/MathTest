@@ -31,6 +31,8 @@ public class TestFragment extends Fragment {
     private FragmentManager childManager;
     private QuestionServer server;
     private Button endTestButton;
+    private Fragment answerFragment;
+    private Fragment questionFragment;
 
     public TestFragment() {
         // Required empty public constructor
@@ -65,9 +67,6 @@ public class TestFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_test, container, false);
-
-        Fragment answerFragment;
-        Fragment questionFragment;
 
 
         parentManager = getParentFragmentManager();
@@ -105,6 +104,8 @@ public class TestFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 EndTestFragment endFragment = new EndTestFragment();
+
+                ((QuestionFragment) questionFragment).stopTimerTask();
 
                 parentManager.beginTransaction().replace(R.id.mainFrame, endFragment).commit();
             }

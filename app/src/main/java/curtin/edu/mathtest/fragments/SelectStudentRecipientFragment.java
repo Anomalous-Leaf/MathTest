@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import curtin.edu.mathtest.R;
 import curtin.edu.mathtest.model.Student;
+import curtin.edu.mathtest.model.TestDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +40,9 @@ public class SelectStudentRecipientFragment extends Fragment {
     private String mParam2;
 
     private FragmentManager parentFragmentManager;
+    private StudentListAdapter adapter;
+    private TestDatabase db;
+    private RecyclerView rv;
 
     public SelectStudentRecipientFragment() {
         // Required empty public constructor
@@ -81,6 +86,14 @@ public class SelectStudentRecipientFragment extends Fragment {
 
         //Will also display a list of students. But each row of list will then open a email app to send
         // To student selected in previous fragment
+        parentFragmentManager = getParentFragmentManager();
+        db = TestDatabase.getInstance();
+
+        //Set up the list of students who can start the test
+        adapter = new StudentListAdapter(db.getStudents());
+        rv = view.findViewById(R.id.testStudentList);
+        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rv.setAdapter(adapter);
 
 
         return view;
@@ -107,10 +120,10 @@ public class SelectStudentRecipientFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     //Create fragment for selecting test result to email to this student
-                    Fragment testFragment = TestResultsListFragment.newInstance(currStudent.getId());
+                    Fragment testResultsListFragment = TestResultsListFragment.newInstance(currStudent.getId());
 
                     //Replace fragment
-                    parentFragmentManager.beginTransaction().replace(R.id.mainFrame, testFragment).commit();
+                    parentFragmentManager.beginTransaction().replace(R.id.mainFrame, testResultsListFragment).commit();
 
                 }
             });

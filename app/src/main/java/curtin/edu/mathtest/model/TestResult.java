@@ -19,6 +19,15 @@ public class TestResult
         endTime = startTime;
     }
 
+    public TestResult(int studentId, String startTime, String endTime, int questions, int score)
+    {
+        this.studentId = studentId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.questions = questions;
+        this.score = score;
+    }
+
     public int getQuestions() {
         return questions;
     }
@@ -51,5 +60,7 @@ public class TestResult
         questions++;
         this.score = score;
     }
+
+
 
 }

@@ -55,7 +55,7 @@ public class Student
         //Loop to find the highest id in database
         for (Student curr : students)
         {
-            if (curr.getId() > nextId)
+            if (curr.getId() >= nextId)
             {
                 nextId = curr.getId() + 1;
             }
