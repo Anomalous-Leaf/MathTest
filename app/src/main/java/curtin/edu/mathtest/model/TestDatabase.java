@@ -146,7 +146,7 @@ public class TestDatabase
     public TestResult getResult(int id, String startTime)
     {
         TestResult result;
-        String selection = "WHERE " + TestResults.Cols.ID + " = ? AND " + TestResults.Cols.START_TIME + " = ?";
+        String selection = TestResults.Cols.ID + " = ? AND " + TestResults.Cols.START_TIME + " = ?";
         String[] args = {String.valueOf(id), startTime};
 
         TestCursor cursor = new TestCursor(db.query(TestResults.NAME,
