@@ -117,8 +117,6 @@ public class TeacherFragment extends Fragment {
                 TestResultsListFragment testListFrag = new TestResultsListFragment();
 
                 parentManager.beginTransaction().replace(R.id.mainFrame, testListFrag).commit();
-
-
             }
         });
 

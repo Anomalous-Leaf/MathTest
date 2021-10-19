@@ -17,14 +17,9 @@ import curtin.edu.mathtest.R;
  */
 public class TestResultsListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String STUDENT_ID = "studentId";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int studentId;
 
     public TestResultsListFragment() {
         // Required empty public constructor
@@ -34,16 +29,14 @@ public class TestResultsListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param inId Parameter 1.
      * @return A new instance of fragment TestResultsListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TestResultsListFragment newInstance(String param1, String param2) {
+    public static TestResultsListFragment newInstance(int inId) {
         TestResultsListFragment fragment = new TestResultsListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(STUDENT_ID, inId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,8 +45,7 @@ public class TestResultsListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            studentId = getArguments().getInt(STUDENT_ID);
         }
     }
 
@@ -61,6 +53,14 @@ public class TestResultsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_test_results_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_test_results_list, container, false);
+
+
+        //Is just a list that shows all test results. On click, it will open the test result fragment
+        //For that result
+
+
+
+        return view;
     }
 }
