@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout-land/fragment_email_list.xml" value="0.1" />
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout-land/fragment_phone_list.xml" value="0.128" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout-land/fragment_register_student.xml" value="0.1" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout-sw600dp/fragment_login.xml" value="0.1" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/activity_main.xml" value="0.1265625" />
