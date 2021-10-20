@@ -77,8 +77,12 @@ public class TestFragment extends Fragment {
         server = QuestionServer.getInstance();
         server.setURL("192.168.0.58");
 
-        server.newTest(studentId, getActivity());
-        server.nextQuestion();
+        if (savedInstanceState == null)
+        {
+            //Start new test if not started
+            server.newTest(studentId, getActivity());
+            server.nextQuestion();
+        }
 
         questionFragment = childManager.findFragmentById(R.id.questionFrame);
         answerFragment =  childManager.findFragmentById(R.id.answerFrame);
