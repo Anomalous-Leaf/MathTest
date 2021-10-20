@@ -82,9 +82,10 @@ public class EmailListFragment extends Fragment {
 
         emailFields = new ArrayList<>();
         newEmailList = new ArrayList<>();
-        currentEmailList = new ArrayList<>();
         db = TestDatabase.getInstance();
         student = db.getStudent(studentId);
+
+        currentEmailList = student.getEmailList();
 
         email1 = view.findViewById(R.id.emailField1);
         email2 = view.findViewById(R.id.emailField2);

@@ -4,6 +4,7 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -74,6 +75,20 @@ public class SelectStudentFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        // Create callback for handling the back button press
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // When pressed, remove this fragment and pop backstack
+                FragmentManager manager = getParentFragmentManager();
+                manager.beginTransaction().remove(SelectStudentFragment.this).commit();
+                manager.popBackStack();
+            }
+        };
+
+        //Add the call back
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
