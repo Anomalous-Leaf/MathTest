@@ -41,6 +41,8 @@ public class Student
 
         phoneList = new ArrayList<>();
         emailList = new ArrayList<>();
+
+        nextId++;
     }
 
     public static int getNextId()

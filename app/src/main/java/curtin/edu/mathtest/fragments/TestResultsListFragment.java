@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public class TestResultsListFragment extends Fragment {
     private ResultListAdapter adapter;
     private FragmentManager parentFragmentManager;
     private RecyclerView rv;
+    private Button highLowSort;
+    private Button lowHighSort;
 
 
     public TestResultsListFragment() {
@@ -80,6 +83,26 @@ public class TestResultsListFragment extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setAdapter(adapter);
 
+        highLowSort = view.findViewById(R.id.highLowSortButton);
+        lowHighSort = view.findViewById(R.id.lowHighSortButton);
+
+        highLowSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter = new ResultListAdapter(db.getAllHighToLowResults());
+                rv.setAdapter(adapter);
+
+            }
+        });
+
+        lowHighSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter = new ResultListAdapter(db.getAllLowToHighResults());
+                rv.setAdapter(adapter);
+            }
+        });
+
 
 
         return view;
@@ -92,18 +115,20 @@ public class TestResultsListFragment extends Fragment {
         private TextView firstName;
         private TextView lastName;
         private TextView startTime;
+        private TextView scoreView;
         private TestDatabase db;
 
         public TestResultViewHolder(View view)
         {
             super(view);
+            db = TestDatabase.getInstance();
 
             //Get references to the objects in row
             firstName = view.findViewById(R.id.resultListFirstName);
             lastName = view.findViewById(R.id.resultListLastName);
             startTime = view.findViewById(R.id.resultListStartTime);
+            scoreView = view.findViewById(R.id.listScore);
 
-            db = TestDatabase.getInstance();
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,6 +149,7 @@ public class TestResultsListFragment extends Fragment {
             firstName.setText(db.getStudent(currResult.getStudentId()).getFirstName());
             lastName.setText(db.getStudent(currResult.getStudentId()).getLastName());
             startTime.setText(currResult.getStartTime());
+            scoreView.setText(String.valueOf(currResult.getScore()));
         }
     }
 
