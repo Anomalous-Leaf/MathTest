@@ -33,6 +33,7 @@ public class TestDatabase
     public void load(Context context)
     {
         this.db = new TestDbHelper(context.getApplicationContext()).getWritableDatabase();
+        this.db.execSQL("PRAGMA foreign_keys = ON");
     }
 
     public void addResult(TestResult result)

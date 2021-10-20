@@ -3,8 +3,10 @@ package curtin.edu.mathtest.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
 import android.text.Editable;
@@ -69,6 +71,20 @@ public class StudentDetailsFragment extends Fragment {
         if (getArguments() != null) {
             studentId = getArguments().getInt(STUDENT_ID);
         }
+
+        // Create callback for handling the back button press
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // When pressed, remove this fragment and pop backstack
+                FragmentManager manager = getParentFragmentManager();
+                manager.beginTransaction().remove(StudentDetailsFragment.this).commit();
+                manager.popBackStack();
+            }
+        };
+
+        //Add the call back
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -107,7 +123,7 @@ public class StudentDetailsFragment extends Fragment {
                 //Open fragment to view and edit phones
                 PhoneListFragment phoneFragment = PhoneListFragment.newInstance(studentId);
 
-                getParentFragmentManager().beginTransaction().replace(R.id.mainFrame, phoneFragment).commit();
+                getParentFragmentManager().beginTransaction().addToBackStack(STUDENT_DETAILS_FRAGMENT).replace(R.id.mainFrame, phoneFragment).commit();
 
             }
         });
@@ -118,7 +134,7 @@ public class StudentDetailsFragment extends Fragment {
                 //Open fragment to view and edit emails
                 EmailListFragment emailListFragment = EmailListFragment.newInstance(studentId);
 
-                getParentFragmentManager().beginTransaction().replace(R.id.mainFrame, emailListFragment).commit();
+                getParentFragmentManager().beginTransaction().addToBackStack(STUDENT_DETAILS_FRAGMENT).replace(R.id.mainFrame, emailListFragment).commit();
             }
         });
 

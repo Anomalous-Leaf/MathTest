@@ -24,6 +24,8 @@ public class TeacherFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final String TEACHER_FRAGMENT = "teacherFragment";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -83,7 +85,7 @@ public class TeacherFragment extends Fragment {
             public void onClick(View view) {
                 SelectTestResultToSendFragment sendResFrag = new SelectTestResultToSendFragment();
 
-                parentManager.beginTransaction().replace(R.id.mainFrame, sendResFrag).commit();
+                parentManager.beginTransaction().addToBackStack(TEACHER_FRAGMENT).replace(R.id.mainFrame, sendResFrag).commit();
 
 
             }
@@ -94,7 +96,7 @@ public class TeacherFragment extends Fragment {
             public void onClick(View view) {
                 RegisterStudentFragment regFrag = new RegisterStudentFragment();
 
-                parentManager.beginTransaction().replace(R.id.mainFrame, regFrag).commit();
+                parentManager.beginTransaction().addToBackStack(TEACHER_FRAGMENT).replace(R.id.mainFrame, regFrag).commit();
 
 
             }
@@ -105,7 +107,7 @@ public class TeacherFragment extends Fragment {
             public void onClick(View view) {
                 StudentListFragment studentListFrag = new StudentListFragment();
 
-                parentManager.beginTransaction().replace(R.id.mainFrame, studentListFrag).commit();
+                parentManager.beginTransaction().addToBackStack(TEACHER_FRAGMENT).replace(R.id.mainFrame, studentListFrag).commit();
 
 
             }
@@ -116,7 +118,7 @@ public class TeacherFragment extends Fragment {
             public void onClick(View view) {
                 TestResultsListFragment testListFrag = new TestResultsListFragment();
 
-                parentManager.beginTransaction().replace(R.id.mainFrame, testListFrag).commit();
+                parentManager.beginTransaction().addToBackStack(TEACHER_FRAGMENT).replace(R.id.mainFrame, testListFrag).commit();
             }
         });
 

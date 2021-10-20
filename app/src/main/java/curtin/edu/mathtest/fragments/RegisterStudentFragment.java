@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -106,6 +107,24 @@ public class RegisterStudentFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        // Create callback for handling the back button press
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // When pressed, remove this fragment and pop backstack
+                FragmentManager manager = getParentFragmentManager();
+                manager.beginTransaction().remove(RegisterStudentFragment.this).commit();
+                manager.popBackStack();
+            }
+        };
+
+        //Add the call back
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+
+        emails = new ArrayList<>();
+        phones = new ArrayList<>();
     }
 
     @Override
@@ -367,23 +386,18 @@ public class RegisterStudentFragment extends Fragment {
             emails = savedInstanceState.getStringArrayList(EMAILS);
             phones = savedInstanceState.getStringArrayList(PHONES);
         }
-        else
-        {
-            emails = new ArrayList<>();
-            phones = new ArrayList<>();
-        }
 
         return view;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putString(FIRST_NAME, firstName);
         outState.putString(LAST_NAME, lastName);
         outState.putString(PHOTO_URI, photoUri);
         outState.putStringArrayList(EMAILS, emails);
         outState.putStringArrayList(PHONES, phones);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
