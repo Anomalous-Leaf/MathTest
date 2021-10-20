@@ -33,6 +33,8 @@ public class TestDatabase
     public void load(Context context)
     {
         this.db = new TestDbHelper(context.getApplicationContext()).getWritableDatabase();
+
+        //Allows child rows to be deleted when a parent foreign key is deleted
         this.db.execSQL("PRAGMA foreign_keys = ON");
     }
 
@@ -125,6 +127,66 @@ public class TestDatabase
                 null,
                 null,
                 null));
+
+        try
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast())
+            {
+                results.add(cursor.getTestResult());
+                cursor.moveToNext();
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+
+        return results;
+    }
+
+    public List<TestResult> getAllLowToHighResults()
+    {
+        List<TestResult> results = new ArrayList<>();
+
+        TestCursor cursor = new TestCursor(db.query(TestResults.NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                TestResults.Cols.SCORE + " ASC"));
+
+        try
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast())
+            {
+                results.add(cursor.getTestResult());
+                cursor.moveToNext();
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+
+        return results;
+    }
+
+    public List<TestResult> getAllHighToLowResults()
+    {
+        List<TestResult> results = new ArrayList<>();
+
+        TestCursor cursor = new TestCursor(db.query(TestResults.NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                TestResults.Cols.SCORE + " DESC"));
 
         try
         {
