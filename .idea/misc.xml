@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout-land/fragment_register_student.xml" value="0.1" />
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout-sw600dp/fragment_login.xml" value="0.1" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/activity_main.xml" value="0.1265625" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_answer.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_email_list.xml" value="0.2" />
@@ -13,7 +15,7 @@
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_phone_list.xml" value="0.115625" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_question_fragment.xml" value="0.467444120505345" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_question_frgment.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_register_student.xml" value="0.176" />
+        <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_register_student.xml" value="0.24567474048442905" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_select_student.xml" value="0.1265625" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_select_student_recipient.xml" value="0.11639492753623189" />
         <entry key="..\:/Users/charo/AndroidStudioProjects/MathTest/app/src/main/res/layout/fragment_select_test_result_to_send.xml" value="0.11639492753623189" />
