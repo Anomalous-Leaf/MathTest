@@ -15,41 +15,76 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Question"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05"/>
+            app:layout_constraintTop_toBottomOf="@+id/testScore"
+            app:layout_constraintVertical_bias="0.1" />
 
         <TextView
             android:id="@+id/timeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Time Left"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05" />
+            app:layout_constraintEnd_toEndOf="@+id/timeLeftLabel"
+            app:layout_constraintStart_toStartOf="@+id/timeLeftLabel"
+            app:layout_constraintTop_toBottomOf="@+id/timeLeftLabel" />
 
         <TextView
             android:id="@+id/timerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Timer"
-            app:layout_constraintTop_toBottomOf="@id/question"
+            app:layout_constraintEnd_toEndOf="@+id/timeLabel"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/timeLabel"
+            app:layout_constraintTop_toBottomOf="@+id/timeLabel" />
 
         <TextView
             android:id="@+id/testScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Score"
-            app:layout_constraintTop_toBottomOf="@id/timeLeft"
+            app:layout_constraintEnd_toEndOf="@+id/scoreTestLabel"
             app:layout_constraintLeft_toLeftOf="@id/timeLeft"
-            app:layout_constraintRight_toRightOf="@id/timeLeft"/>
+            app:layout_constraintRight_toRightOf="@id/timeLeft"
+            app:layout_constraintStart_toStartOf="@+id/scoreTestLabel"
+            app:layout_constraintTop_toBottomOf="@+id/scoreTestLabel" />
+
+        <TextView
+            android:id="@+id/timeLeftLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time Left (seconds)"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/timeLabel"
+            app:layout_constraintVertical_bias="0.15"
+            app:layout_constraintHorizontal_bias="0.1"/>
+
+        <TextView
+            android:id="@+id/scoreTestLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Score"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeLeft"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <TextView
+            android:id="@+id/timeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time Passed (Seconds)"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/timeLeftLabel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
